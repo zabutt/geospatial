@@ -3,34 +3,29 @@ import pandas as pd
 from streamlit_folium import folium_static
 import folium
 
-# Function to load data from CSV file
 def load_data(file):
-    df = pd.read_csv(file)
-    df['Latitude'] = pd.to_numeric(df['Latitude'], errors='coerce')
-    df['Longitude'] = pd.to_numeric(df['Longitude'], errors='coerce')
-    return df
+    return pd.read_csv(file)
 
-# Function to display the map
 def show_map(df):
-    st.subheader("Geospatial Data Visualization")
-    st.map(df)
+    st.map(df, use_container_width=True)
 
-# Main function
 def main():
-    st.title("Geospatial Data Visualization App")
+    st.title("Geospatial Data Visualization")
 
-    # Upload CSV file or choose from provided options
-    uploaded_file = st.file_uploader("Choose a CSV file", type=["csv"])
+    # Sidebar
+    st.sidebar.header("Options")
+    uploaded_file = st.sidebar.file_uploader("Choose a CSV file", type=["csv"])
 
-    if uploaded_file:
-        # Load data from the uploaded file
+    # Main content
+    if uploaded_file is not None:
         df = load_data(uploaded_file)
 
-        if not df.empty:
-            # Display the map with the uploaded data
-            show_map(df)
-        else:
-            st.warning("The uploaded file is empty or does not contain valid geospatial data.")
+        # Convert latitude and longitude columns to numeric
+        df['latitude'] = pd.to_numeric(df['latitude'], errors='coerce')
+        df['longitude'] = pd.to_numeric(df['longitude'], errors='coerce')
+
+        show_map(df)
 
 if __name__ == "__main__":
     main()
+
