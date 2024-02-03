@@ -19,7 +19,7 @@ def show_map(df):
 
 def main():
     st.title("Geospatial Data Visualization")
-    st.markdown("Upload a csv file containing langitude and latitude")
+    st.markdown("This app allows you to visualize your data!")
     # Sidebar
     st.sidebar.header("Options")
     uploaded_file = st.sidebar.file_uploader("Choose a CSV file", type=["csv"])
