@@ -29,11 +29,11 @@ def show_map(df, lat_col, lon_col, use_clusters, map_style):
     if map_style == "OpenStreetMap":
         folium.TileLayer("openstreetmap").add_to(folium_map)
     elif map_style == "Stamen Terrain":
-        folium.TileLayer("stamenterrain").add_to(folium_map)
+        folium.TileLayer("stamenterrain", attr="Stamen Terrain").add_to(folium_map)
     elif map_style == "Stamen Toner":
-        folium.TileLayer("stamentoner").add_to(folium_map)
+        folium.TileLayer("stamentoner", attr="Stamen Toner").add_to(folium_map)
     elif map_style == "Stamen Watercolor":
-        folium.TileLayer("stamenwatercolor").add_to(folium_map)
+        folium.TileLayer("stamenwatercolor", attr="Stamen Watercolor").add_to(folium_map)
     elif map_style == "CartoDB Positron":
         folium.TileLayer("cartodbpositron").add_to(folium_map)
 
@@ -66,3 +66,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
