@@ -21,7 +21,13 @@ def show_map_openstreetmap(df, lat_col, lon_col, use_clusters):
     return folium_map
 
 def show_map_stamen_terrain(df, lat_col, lon_col, use_clusters):
-    folium_map = folium.Map(location=[df[lat_col].mean(), df[lon_col].mean()], zoom_start=12, control_scale=True, tiles='Stamen Terrain')
+    folium_map = folium.Map(
+        location=[df[lat_col].mean(), df[lon_col].mean()],
+        zoom_start=12,
+        control_scale=True,
+        tiles='Stamen Terrain',
+        attr='Stamen'
+    )
 
     if use_clusters:
         data = list(zip(df[lat_col], df[lon_col]))
@@ -70,3 +76,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
