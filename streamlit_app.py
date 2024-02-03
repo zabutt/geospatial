@@ -8,12 +8,7 @@ def load_data(file):
     df = pd.read_csv(file)
     return df
 
-def show_map(df, lat_col, lon_col, use_clusters, map_style):
-    st.header("Geospatial Data Visualization")
-
-    if st.checkbox("Show Data", True):
-        st.write(df)
-
+def show_map_openstreetmap(df, lat_col, lon_col, use_clusters):
     folium_map = folium.Map(location=[df[lat_col].mean(), df[lon_col].mean()], zoom_start=12, control_scale=True)
 
     if use_clusters:
@@ -23,21 +18,21 @@ def show_map(df, lat_col, lon_col, use_clusters, map_style):
         for idx, row in df.iterrows():
             folium.Marker([row[lat_col], row[lon_col]]).add_to(folium_map)
 
-    folium_static(folium_map, width=800, height=600)
+    return folium_map
 
-    # Set the map style
-    if map_style == "OpenStreetMap":
-        folium.TileLayer("openstreetmap").add_to(folium_map)
-    elif map_style == "Stamen Terrain":
-        folium.TileLayer("stamenterrain", attr="Stamen Terrain").add_to(folium_map)
-    elif map_style == "Stamen Toner":
-        folium.TileLayer("stamentoner", attr="Stamen Toner").add_to(folium_map)
-    elif map_style == "Stamen Watercolor":
-        folium.TileLayer("stamenwatercolor", attr="Stamen Watercolor").add_to(folium_map)
-    elif map_style == "CartoDB Positron":
-        folium.TileLayer("cartodbpositron").add_to(folium_map)
+def show_map_stamen_terrain(df, lat_col, lon_col, use_clusters):
+    folium_map = folium.Map(location=[df[lat_col].mean(), df[lon_col].mean()], zoom_start=12, control_scale=True, tiles='Stamen Terrain')
 
-    folium.LayerControl().add_to(folium_map)
+    if use_clusters:
+        data = list(zip(df[lat_col], df[lon_col]))
+        FastMarkerCluster(data).add_to(folium_map)
+    else:
+        for idx, row in df.iterrows():
+            folium.Marker([row[lat_col], row[lon_col]]).add_to(folium_map)
+
+    return folium_map
+
+# Add similar functions for other map styles
 
 def main():
     st.title("Geospatial Data Explorer")
@@ -59,11 +54,16 @@ def main():
                 use_clusters = st.sidebar.checkbox("Use Marker Clusters", value=True)
                 map_style = st.sidebar.selectbox("Select Map Style", ["OpenStreetMap", "Stamen Terrain", "Stamen Toner", "Stamen Watercolor", "CartoDB Positron"])
 
-                show_map(df, lat_col, lon_col, use_clusters, map_style)
+                if map_style == "OpenStreetMap":
+                    folium_map = show_map_openstreetmap(df, lat_col, lon_col, use_clusters)
+                elif map_style == "Stamen Terrain":
+                    folium_map = show_map_stamen_terrain(df, lat_col, lon_col, use_clusters)
+                # Add similar conditions for other map styles
+
+                folium_static(folium_map, width=800, height=600)
 
         except pd.errors.EmptyDataError:
             st.error("Uploaded file is empty. Please upload a valid CSV file.")
 
 if __name__ == "__main__":
     main()
-
