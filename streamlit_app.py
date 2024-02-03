@@ -54,13 +54,16 @@ def main():
                 use_clusters = st.sidebar.checkbox("Use Marker Clusters", value=True)
                 map_style = st.sidebar.selectbox("Select Map Style", ["OpenStreetMap", "Stamen Terrain", "Stamen Toner", "Stamen Watercolor", "CartoDB Positron"])
 
+                folium_map = None  # Initialize the variable outside the conditions
+
                 if map_style == "OpenStreetMap":
                     folium_map = show_map_openstreetmap(df, lat_col, lon_col, use_clusters)
                 elif map_style == "Stamen Terrain":
                     folium_map = show_map_stamen_terrain(df, lat_col, lon_col, use_clusters)
                 # Add similar conditions for other map styles
 
-                folium_static(folium_map, width=800, height=600)
+                if folium_map is not None:
+                    folium_static(folium_map, width=800, height=600)
 
         except pd.errors.EmptyDataError:
             st.error("Uploaded file is empty. Please upload a valid CSV file.")
