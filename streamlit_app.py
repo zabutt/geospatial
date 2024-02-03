@@ -16,9 +16,8 @@ def show_map(df, lat_col, lon_col, use_clusters, map_style):
     folium_map = folium.Map(location=[df[lat_col].mean(), df[lon_col].mean()], zoom_start=12, control_scale=True)
 
     if use_clusters:
-        marker_cluster = FastMarkerCluster().add_to(folium_map)
-        for idx, row in df.iterrows():
-            folium.Marker([row[lat_col], row[lon_col]]).add_to(marker_cluster)
+        data = list(zip(df[lat_col], df[lon_col]))
+        FastMarkerCluster(data).add_to(folium_map)
     else:
         for idx, row in df.iterrows():
             folium.Marker([row[lat_col], row[lon_col]]).add_to(folium_map)
