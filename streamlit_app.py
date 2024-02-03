@@ -66,6 +66,8 @@ def main():
                     folium_map = show_map_openstreetmap(df, lat_col, lon_col, use_clusters)
                 elif map_style == "Stamen Terrain":
                     folium_map = show_map_stamen_terrain(df, lat_col, lon_col, use_clusters)
+                elif map_style == "Stamen Toner":
+                    folium_map = show_map_stamen_toner(df, lat_col, long_col, use_clusters)
                 # Add similar conditions for other map styles
 
                 if folium_map is not None:
