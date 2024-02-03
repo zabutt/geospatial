@@ -1,6 +1,6 @@
-Latitude,Longitude,Location
-37.7749,-122.4194,San Francisco, CA
-40.7128,-74.0060,New York, NY
-34.0522,-118.2437,Los Angeles, CA
-41.8781,-87.6298,Chicago, IL
-29.7604,-95.3698,Houston, TX
+latitude,longitude
+37.7749,-122.4194
+40.7128,-74.0060
+34.0522,-118.2437
+41.8781,-87.6298
+29.7604,-95.3698
