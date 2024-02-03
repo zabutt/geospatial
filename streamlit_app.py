@@ -9,7 +9,15 @@ def load_data(file):
     return df
 
 def show_map_openstreetmap(df, lat_col, lon_col, use_clusters, use_heatmap):
-    folium_map = folium.Map(location=[df[lat_col].mean(), df[lon_col].mean()], zoom_start=12, control_scale=True)
+    # Calculate center and bounds
+    center = [df[lat_col].mean(), df[lon_col].mean()]
+    bounds = [[df[lat_col].min(), df[lon_col].min()], [df[lat_col].max(), df[lon_col].max()]]
+
+    # Create the folium map
+    folium_map = folium.Map(location=center, zoom_start=12, control_scale=True)
+    
+    # Set the bounds
+    folium_map.fit_bounds(bounds)
 
     if use_heatmap:
         heat_data = [[row[lat_col], row[lon_col]] for idx, row in df.iterrows()]
