@@ -2,43 +2,26 @@ import streamlit as st
 import pandas as pd
 import folium
 from streamlit_folium import folium_static
-from folium.plugins import FastMarkerCluster
+from folium.plugins import HeatMap
 
 def load_data(file):
     df = pd.read_csv(file)
     return df
 
-def show_map_openstreetmap(df, lat_col, lon_col, use_clusters):
+def show_map_openstreetmap(df, lat_col, lon_col, use_clusters, use_heatmap):
     folium_map = folium.Map(location=[df[lat_col].mean(), df[lon_col].mean()], zoom_start=12, control_scale=True)
 
-    if use_clusters:
+    if use_heatmap:
+        heat_data = [[row[lat_col], row[lon_col]] for idx, row in df.iterrows()]
+        HeatMap(heat_data).add_to(folium_map)
+    elif use_clusters:
         data = list(zip(df[lat_col], df[lon_col]))
-        FastMarkerCluster(data).add_to(folium_map)
+        folium.plugins.FastMarkerCluster(data).add_to(folium_map)
     else:
         for idx, row in df.iterrows():
             folium.Marker([row[lat_col], row[lon_col]]).add_to(folium_map)
 
     return folium_map
-
-def show_map_stamen_terrain(df, lat_col, lon_col, use_clusters):
-    folium_map = folium.Map(
-        location=[df[lat_col].mean(), df[lon_col].mean()],
-        zoom_start=12,
-        control_scale=True,
-        tiles='Stamen Terrain',
-        attr='Stamen'
-    )
-
-    if use_clusters:
-        data = list(zip(df[lat_col], df[lon_col]))
-        FastMarkerCluster(data).add_to(folium_map)
-    else:
-        for idx, row in df.iterrows():
-            folium.Marker([row[lat_col], row[lon_col]]).add_to(folium_map)
-
-    return folium_map
-
-# Add similar functions for other map styles
 
 def main():
     st.title("Geospatial Data Explorer")
@@ -58,17 +41,9 @@ def main():
                 lat_col = st.sidebar.selectbox("Select Latitude Column", df.columns, key='lat')
                 lon_col = st.sidebar.selectbox("Select Longitude Column", df.columns, key='lon')
                 use_clusters = st.sidebar.checkbox("Use Marker Clusters", value=True)
-                map_style = st.sidebar.selectbox("Select Map Style", ["OpenStreetMap", "Stamen Terrain", "Stamen Toner", "Stamen Watercolor", "CartoDB Positron"])
+                use_heatmap = st.sidebar.checkbox("Use Heatmap", value=False)
 
-                folium_map = None  # Initialize the variable outside the conditions
-
-                if map_style == "OpenStreetMap":
-                    folium_map = show_map_openstreetmap(df, lat_col, lon_col, use_clusters)
-                elif map_style == "Stamen Terrain":
-                    folium_map = show_map_stamen_terrain(df, lat_col, lon_col, use_clusters)
-                elif map_style == "Stamen Toner":
-                    folium_map = show_map_stamen_toner(df, lat_col, long_col, use_clusters)
-                # Add similar conditions for other map styles
+                folium_map = show_map_openstreetmap(df, lat_col, lon_col, use_clusters, use_heatmap)
 
                 if folium_map is not None:
                     folium_static(folium_map, width=800, height=600)
@@ -78,4 +53,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
